@@ -1,22 +1,48 @@
-package jrgd
+package utils
 
 const (
-	dStatusUrl     = "/v2/rtc/device/status"
-	dWakeupUrl     = "/v2/rtc/device/wakeup/"
-	dLoginUrl      = "/v2/rtc/device/login/"
-	dGetInfoUrl    = "/v2/rtc/device/getinfo/"
-	dAbilityUrl    = "/v2/rtc/device/getability/"
-	dGetconfigUrl  = "/v2/rtc/device/getconfig/"
-	dSetconfigUrl  = "/v2/rtc/device/setconfig/"
-	dKeepaliveUrl  = "/v2/rtc/device/keepalive/"
-	dOpdevUrl      = "/v2/rtc/device/opdev/"
-	dcaptureUrl    = "/v2/rtc/device/capture/"
-	dlivestreamUrl = "/v2/rtc/device/livestream/"
+	GwpUrl = "https://api.jftechws.com/gwp/v3/rtc"
+)
+
+const (
+	DStatusUrl               = "/device/status"
+	DWakeupUrl               = "/device/wakeup/"
+	DLoginUrl                = "/device/login/"
+	DGetInfoUrl              = "/device/getinfo/"
+	DAbilityUrl              = "/device/getability/"
+	DGetconfigUrl            = "/device/getconfig/"
+	DSetconfigUrl            = "/device/setconfig/"
+	DKeepaliveUrl            = "/device/keepalive/"
+	DOpdevUrl                = "/device/opdev/"
+	DcaptureUrl              = "/device/capture/"
+	DlivestreamUrl           = "/device/livestream/"
+	DgetTailoredConfig       = "/device/getTailoredConfig/"
+	DsetTailoredConfig       = "/device/setTailoredConfig/"
+	DUsermanage              = "/device/usermanage/"
+	DBind                    = "/device/bind"
+	DUnbind                  = "/device/unbind/"
+	DList                    = "/device/list"
+	DLogout                  = "/device/logout/"
+	DQLoginToken             = "/device/queryLoginToken/"
+	DGetStreamCount          = "/device/getPullStreamConnectionsCount/"
+	DCloseLivestream         = "/device/closeLivestream/"
+	DTalkbackUrl             = "/device/talkbackUrl/"
+	DPlaybackUrl             = "/device/playbackUrl/"
+	DGetVideoList            = "/device/getVideoList/"
+	DGetVideoUrl             = "/device/getVideoUrl/"
+	DGetPicUrl               = "/device/getPicUrl/"
+	DSubserviceMessage       = "/device/subscribeMessage/"
+	DUnSubserviceMessage     = "/device/unsubscribeMessage/"
+	DGetDeviceAlarmList      = "/device/getDeviceAlarmList/"
+	DDoorLockTransparent     = "/device/doorLockTransparent/"
+	DDoorLockRemoteUnlock    = "/device/doorLockRemoteUnlock/"
+	DDoorLockSetTempPassword = "/device/doorLockSetTempPassword/"
 )
 
 const (
 	SystemInfo    = "SystemInfo"
 	KeepAlive     = "KeepAlive"
+	Logout        = "Logout"
 	DirectionLeft = "DirectionLeft"
 	OPSNAP        = "OPSNAP"
 )
@@ -129,6 +155,8 @@ const (
 	ConfigUsers                   = "Users"
 	ConfigGroups                  = "Groups"
 	ConfigSystemExUserMap         = "System.ExUserMap"
+	ConfigDevLP4GLedParameter     = "Dev.LP4GLedParameter"
+	ConfigLPDevWorkMode           = "LPDev.WorkMode"
 )
 
 // Operation related agreements name

@@ -3,8 +3,11 @@ package opedev
 import (
 	"encoding/json"
 	"errors"
-	"jlink-restful-golang-demo/http"
+	"fmt"
+	"jlink-restful-golang-demo/utils"
+	v3 "jlink-restful-golang-demo/v3"
 	"log"
+	"strings"
 )
 
 type OPTimeQueryReq struct {
@@ -21,9 +24,9 @@ type OPTimeQueryData struct {
 	OPTimeQuery string `json:"OPTimeQuery"`
 }
 
-func OpeDevOPTimeQuery(pdcd *OPTimeQueryReq, token string) (string, error) {
+func OpeDevOPTimeQuery(jDevice *v3.JLinkDevice, pdcd *OPTimeQueryReq) (string, error) {
 	parm := make(map[string]interface{})
-	parm["Name"] = OPTimeQuery
+	parm["Name"] = utils.OPTimeQuery
 	// fmt.Println(parm)
 	postData, err := json.Marshal(parm)
 	if err != nil {
@@ -31,7 +34,8 @@ func OpeDevOPTimeQuery(pdcd *OPTimeQueryReq, token string) (string, error) {
 		return "", err
 	}
 	// fmt.Println(string(postData))
-	resbody, err := http.HttpPost(dOpdevUrl, token, postData)
+	url := fmt.Sprintf("%s%s", utils.GwpUrl+utils.DOpdevUrl, jDevice.Jdtoken)
+	resbody, err := jDevice.HttpPost(url, strings.NewReader(string(postData)))
 	if err != nil {
 		log.Println("HttpPost err:" + err.Error())
 		return "", err

@@ -1,4 +1,4 @@
-# restful_api_demo
+# OpenApi SDK V3 Demo
 
 ## Initialization JLinkClient
 
@@ -17,11 +17,35 @@ jClient := jrgd.NewJLinkClient(kUuid, kAppKey, KAppSecret, kMovecard)
 ```
 jDevice := jrgd.NewJLinkDevice(jClient, kDeviceId, devUsername, devPassword)
 ```
+## Device Bind(The v3 version requires the device to be bound to the user's account in order to operate)
+
+```
+DeviceBind,err := jDevice.DeviceBind()
+```
+
+## Device UnBind
+
+```
+DeviceUnBind,err := jDevice.DeviceUnBind()
+```
+
+## Get Device List
+
+```
+DeviceList,err := jDevice.DeviceList(1, 10)
+```
+
 
 ## Get Device Token
 
 ```
-JDToken,err := jDevice.GetDeviceToken()
+DeviceToken,err := jDevice.GetDeviceTokenV3()
+```
+
+## Get Device LoginToken
+
+```
+err := jDevice.LoginToken()
 ```
 
 ## Get Device Status
@@ -30,24 +54,19 @@ JDToken,err := jDevice.GetDeviceToken()
 JDStatus,err := jDevice.DeviceStatus()
 ```
 
-## Low-power Device Wakeup
-
-```
-wakeupFlag,err := jDevice.WakeUp()
-```
 
 ## Device Login
 
 > 1.Login with devUsername and decPassword
 
 ```
-jDLogin,err := jDevice.Login()
+jDLogin,err := jDevice.DeviceLoginPassWord()
 ```
 
 > 2.Log in to the device with the Token obtained from device sharing
 
 ```
-jDLogin,err = jDevice.DeviceLoginByToken(loginToken)
+jDLogin,err = jDevice.DeviceLoginToken()
 ```
 
 ## Get Device Information
@@ -55,7 +74,7 @@ jDLogin,err = jDevice.DeviceLoginByToken(loginToken)
 > Take obtaining system information as an example
 
 ```
-devInfo,err := jDevice.DeviceInfo(jrgd.SystemInfo)
+devInfo,err := jDevice.DeviceGetinfo(utils.SystemInfo)
 ```
 
 ## Device Capability Set Acquisition
@@ -63,7 +82,7 @@ devInfo,err := jDevice.DeviceInfo(jrgd.SystemInfo)
 > Obtain the device capability set after the device is successfully logged in. Take obtaining the system capability set as an example
 
 ```
-jDAbility,err := jDevice.DeviceAbility(jrgd.SystemFunction)
+jDAbility,err := jDevice.DeviceAbility(utils.SystemFunction)
 ```
 
 ## Get Device Configuration
@@ -71,7 +90,7 @@ jDAbility,err := jDevice.DeviceAbility(jrgd.SystemFunction)
 > Take obtaining the device active registration service DAS configuration as an example
 
 ```
-jDConfig,err := jDevice.GetConfig(jrgd.NetWorkDas)
+jDConfig, err := jDevice.DeviceGetconfig(utils.ConfigNetWorkDAS)
 ```
 
 ## Set Device Configuration
@@ -81,7 +100,7 @@ jDConfig,err := jDevice.GetConfig(jrgd.NetWorkDas)
 ```
 	if op, ok := jDConfig.(config.NetWorkDAS); ok {
 		op.Enable = false
-		nw := config.NetWorkDASResp{Name: jrgd.ConfigNetWorkDAS, NetWorkDAS: op}
+		nw := config.NetWorkDASResp{Name: utils.ConfigNetWorkDAS, NetWorkDAS: op}
 		setConfigFlag, err := jDevice.SetConfig(nw)
 		fmt.Println(setConfigFlag, err)
 	}
@@ -91,7 +110,7 @@ jDConfig,err := jDevice.GetConfig(jrgd.NetWorkDas)
 ## Device Keepalive
 
 ```
-keepalive,err := jDevice.Keepalive()
+keepalive,err := jDevice.DeviceKeepalive()
 ```
 
 ## Device Operate
@@ -99,12 +118,12 @@ keepalive,err := jDevice.Keepalive()
 > Take the PTZ direction control as an example
 
 ```
-ptzDirectionControlDTO := new(jrgd.PtzDirectionControlDTO)
-ptzDirectionControlDTO.Command = jrgd.DirectionLeft
+ptzDirectionControlDTO := new(opedev.PtzDirectionControlDTO)
+ptzDirectionControlDTO.Command = utils.DirectionLeft
 ptzDirectionControlDTO.Parameter.Channel = 0
 ptzDirectionControlDTO.Parameter.Preset = 65535
 ptzDirectionControlDTO.Parameter.Step = 6
-jDevice.DeviceOperate(ptzDirectionControlDTO)
+opedev.DeviceOperate(jDevice,ptzDirectionControlDTO)
 ```
 
 ## Get the liveStream
@@ -114,14 +133,11 @@ jDevice.DeviceOperate(ptzDirectionControlDTO)
 > and rs Pass represents the user password registered by the open platform through the RS interface
 
 ```
-jUser := jrgd.NewJLinkUser(jClient, userName, password)
-usertoken,err := jUser.GetUserToken()
-fmt.Println(usertoken)
 STREAM_EXTRA := "1"
 MEDIATYPE_HLS := "hls"
 CHANNEL := "0"
 PROTOCOL_TS := "ts"
-liveStream,err := jDevice.DeviceLivePlayUrl(STREAM_EXTRA, MEDIATYPE_HLS, PROTOCOL_TS, CHANNEL, jUser)
+Livestream, err := jDevice.Livestream(MEDIATYPE_HLS, CHANNEL, STREAM_EXTRA, PROTOCOL_TS)
 ```
 
 ## Device Snapshot
@@ -129,6 +145,33 @@ liveStream,err := jDevice.DeviceLivePlayUrl(STREAM_EXTRA, MEDIATYPE_HLS, PROTOCO
 >  Capture a picture of a channel, The channel number defaults to 0
 
 ```
-channel := 0
-captureUrl ,err:= jDevice.Capture(channel)
+captureUrl ,err:= jDevice.Capture(&jrgd.CaptureRequest{Channel: 0, PicType: 0})
+```
+
+## Low-power Device Wakeup
+
+```
+wakeupFlag,err := jDevice.DeviceWakeup("1")
+```
+
+## IOT DoorLock Device SetTempPassword
+
+>  Set temporary password for door lock equipment
+
+```
+doorLock.DoorLockSetTempPassword(jDevice, []doorLock.TempPassword{ 
+		{
+			EndTime:   "2024-04-19 18:45:56",
+			Password:  "123456",
+			StartTime: "2024-04-19 10:15:56",
+			ValidNum:  1,
+		}})
+```
+
+## IOT DoorLock Device RemoteUnlock
+
+>  Remote unlocking of door lock equipment
+
+```
+doorLock.DoorLockRemoteUnlock(jDevice, "password")
 ```

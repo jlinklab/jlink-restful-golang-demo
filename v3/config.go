@@ -1,33 +1,22 @@
-package jrgd
+package v3
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 	"jlink-restful-golang-demo/config"
-	"jlink-restful-golang-demo/http"
+	"jlink-restful-golang-demo/utils"
 	"log"
+	"strings"
 )
 
-type XYResponse struct {
-	Msg  string `json:"msg"`
-	Code int    `json:"code"`
-	Data Data   `json:"data"`
-}
-
-type Data struct {
-	Name string `json:"name"`
-	Ret  int    `json:"ret"`
-}
-
-func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
+// 获取设备配置
+func (jDevice *JLinkDevice) DeviceGetconfig(name string) (data interface{}, err error) {
 	res, err := jDevice.GetConfigHttp(name)
 	if err != nil {
-		log.Println("GetConfig err：" + err.Error())
-		return
+		return nil, err
 	}
-
-	if name == ConfigAVEncEncode {
+	if name == utils.ConfigAVEncEncode {
 		var resp *config.AVEncEncodeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -38,7 +27,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncEncode, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAVEncEncode {
+	} else if name == utils.ConfigAVEncEncode {
 		var resp *config.AVEncEncodeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -49,7 +38,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncEncode, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAVEncVideoWidget {
+	} else if name == utils.ConfigAVEncVideoWidget {
 		var resp *config.AVEncVideoWidgetResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -60,7 +49,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncVideoWidget, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAVEncVideoColor {
+	} else if name == utils.ConfigAVEncVideoColor {
 		var resp *config.AVEncVideoColorResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -71,7 +60,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncVideoColor, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAVEncSmartH264 {
+	} else if name == utils.ConfigAVEncSmartH264 {
 		var resp *config.AVEncSmartH264Resp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -82,7 +71,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncSmartH264, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoVolume {
+	} else if name == utils.ConfigfVideoVolume {
 		var resp *config.FVideoVolumeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -93,7 +82,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoVolume, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoOSDInfo {
+	} else if name == utils.ConfigfVideoOSDInfo {
 		var resp *config.FVideoOSDInfoResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -104,7 +93,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoOSDInfo, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigRecord {
+	} else if name == utils.ConfigRecord {
 		var resp *config.RecordResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -115,7 +104,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.Record, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigStorageSnapshot {
+	} else if name == utils.ConfigStorageSnapshot {
 		var resp *config.StorageSnapshotResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -126,7 +115,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.StorageSnapshot, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigDetectBlindDetect {
+	} else if name == utils.ConfigDetectBlindDetect {
 		var resp *config.DetectBlindDetectResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -137,7 +126,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.DetectBlindDetect, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigDetectMotionDetect {
+	} else if name == utils.ConfigDetectMotionDetect {
 		var resp *config.DetectMotionDetectResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -148,7 +137,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.DetectMotionDetect, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigDetectLossDetect {
+	} else if name == utils.ConfigDetectLossDetect {
 		var resp *config.DetectLossDetectResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -159,7 +148,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.DetectLossDetect, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigChannelTitle {
+	} else if name == utils.ConfigChannelTitle {
 		var resp *config.ChannelTitleResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -170,7 +159,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.ChannelTitle, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigCamera {
+	} else if name == utils.ConfigCamera {
 		var resp *config.CameraResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -181,7 +170,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.Camera, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigDetectHumanDetection {
+	} else if name == utils.ConfigDetectHumanDetection {
 		var resp *config.DetectHumanDetectionResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -192,7 +181,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.DetectHumanDetection, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigDetectHumanDetection0 {
+	} else if name == utils.ConfigDetectHumanDetection0 {
 		var resp *config.DetectHumanDetection0Resp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -203,7 +192,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.DetectHumanDetection0, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAbilityVoiceTipType {
+	} else if name == utils.ConfigAbilityVoiceTipType {
 		var resp *config.AbilityVoiceTipTypeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -214,7 +203,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AbilityVoiceTipType, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUartComm {
+	} else if name == utils.ConfigUartComm {
 		var resp *config.UartCommResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -225,7 +214,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.UartComm, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUartPTZ {
+	} else if name == utils.ConfigUartPTZ {
 		var resp *config.UartPTZResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -236,7 +225,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.UartPTZ, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUartRS485 {
+	} else if name == utils.ConfigUartRS485 {
 		var resp *config.UartRS485Resp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -247,7 +236,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.UartRS485, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetCommon {
+	} else if name == utils.ConfigNetWorkNetCommon {
 		var resp *config.NetWorkNetCommonResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -258,7 +247,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetCommon, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetDHCP {
+	} else if name == utils.ConfigNetWorkNetDHCP {
 		var resp *config.NetWorkNetDHCPResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -269,7 +258,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetDHCP, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetEmail {
+	} else if name == utils.ConfigNetWorkNetEmail {
 		var resp *config.NetWorkNetEmailResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -280,7 +269,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetEmail, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetNTP {
+	} else if name == utils.ConfigNetWorkNetNTP {
 		var resp *config.NetWorkNetNTPResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -291,7 +280,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetNTP, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetDNS {
+	} else if name == utils.ConfigNetWorkNetDNS {
 		var resp *config.NetWorkNetDNSResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -302,7 +291,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetDNS, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetFTP {
+	} else if name == utils.ConfigNetWorkNetFTP {
 		var resp *config.NetWorkNetFTPResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -313,7 +302,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetFTP, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAlarmNetIPConflict {
+	} else if name == utils.ConfigAlarmNetIPConflict {
 		var resp *config.AlarmNetIPConflictResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -324,7 +313,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AlarmNetIPConflict, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAlarmNetAbort {
+	} else if name == utils.ConfigAlarmNetAbort {
 		var resp *config.AlarmNetAbortResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -335,7 +324,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AlarmNetAbort, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkUpnp {
+	} else if name == utils.ConfigNetWorkUpnp {
 		var resp *config.NetWorkUpnpResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -346,7 +335,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkUpnp, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetIPFilter {
+	} else if name == utils.ConfigNetWorkNetIPFilter {
 		var resp *config.NetWorkNetIPFilterResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -357,7 +346,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetIPFilter, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigOPUTCTimeSetting {
+	} else if name == utils.ConfigOPUTCTimeSetting {
 		var resp *config.OPUTCTimeSettingResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -368,7 +357,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.OPUTCTimeSetting, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetOrder {
+	} else if name == utils.ConfigNetWorkNetOrder {
 		var resp *config.NetWorkNetOrderResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -379,7 +368,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetOrder, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkDAS {
+	} else if name == utils.ConfigNetWorkDAS {
 		var resp *config.NetWorkDASResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -390,7 +379,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkDAS, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkPMS {
+	} else if name == utils.ConfigNetWorkPMS {
 		var resp *config.NetWorkPMSResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -401,7 +390,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkPMS, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNat {
+	} else if name == utils.ConfigNetWorkNat {
 		var resp *config.NetWorkNatResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -412,7 +401,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNat, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkWifi {
+	} else if name == utils.ConfigNetWorkWifi {
 		var resp *config.NetWorkWifiResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -423,7 +412,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkWifi, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigFVideoGUISet {
+	} else if name == utils.ConfigFVideoGUISet {
 		var resp *config.FVideoGUISetResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -434,7 +423,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoGUISet, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigStorageStoragePosition {
+	} else if name == utils.ConfigStorageStoragePosition {
 		var resp *config.StorageStoragePositionResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -445,7 +434,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.StorageStoragePosition, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigStorageStorageNotExist {
+	} else if name == utils.ConfigStorageStorageNotExist {
 		var resp *config.StorageStorageNotExistResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -456,7 +445,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.StorageStorageNotExist, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigStorageStorageLowSpace {
+	} else if name == utils.ConfigStorageStorageLowSpace {
 		var resp *config.StorageStorageLowSpaceResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -467,7 +456,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.StorageStorageLowSpace, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigStorageStorageFailure {
+	} else if name == utils.ConfigStorageStorageFailure {
 		var resp *config.StorageStorageFailureResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -478,7 +467,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.StorageStorageFailure, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigGeneralGeneral {
+	} else if name == utils.ConfigGeneralGeneral {
 		var resp *config.GeneralGeneralResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -489,7 +478,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.GeneralGeneral, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigGeneralLocation {
+	} else if name == utils.ConfigGeneralLocation {
 		var resp *config.GeneralLocationResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -500,7 +489,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.GeneralLocation, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigCameraParam {
+	} else if name == utils.ConfigCameraParam {
 		var resp *config.CameraParamResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -511,7 +500,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.CameraParam, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigCameraParamEx {
+	} else if name == utils.ConfigCameraParamEx {
 		var resp *config.CameraParamExResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -522,7 +511,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.CameraParamEx, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigSimplifyEncode {
+	} else if name == utils.ConfigSimplifyEncode {
 		var resp *config.SimplifyEncodeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -533,7 +522,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.SimplifyEncode, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAVEncMultiChannelEncode {
+	} else if name == utils.ConfigAVEncMultiChannelEncode {
 		var resp *config.AVEncMultiChannelEncodeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -544,7 +533,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AVEncMultiChannelEncode, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoTVAdjust {
+	} else if name == utils.ConfigfVideoTVAdjust {
 		var resp *config.FVideoTVAdjustResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -555,7 +544,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoTVAdjust, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoVideoOut {
+	} else if name == utils.ConfigfVideoVideoOut {
 		var resp *config.FVideoVideoOutResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -566,7 +555,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoVideoOut, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoPlay {
+	} else if name == utils.ConfigfVideoPlay {
 		var resp *config.FVideoPlayResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -577,7 +566,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoPlay, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoAudioInFormat {
+	} else if name == utils.ConfigfVideoAudioInFormat {
 		var resp *config.FVideoAudioInFormatResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -588,7 +577,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoAudioInFormat, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoTour {
+	} else if name == utils.ConfigfVideoTour {
 		var resp *config.FVideoTourResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -599,7 +588,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoTour, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigfVideoVideoOutPriority {
+	} else if name == utils.ConfigfVideoVideoOutPriority {
 		var resp *config.FVideoVideoOutPriorityResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -610,7 +599,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.FVideoVideoOutPriority, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAnalyze {
+	} else if name == utils.ConfigAnalyze {
 		var resp *config.AnalyzeResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -621,7 +610,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.Analyze, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigVideoDec {
+	} else if name == utils.ConfigVideoDec {
 		var resp *config.VideoDecResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -632,7 +621,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.VideoDec, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigVideoChannel {
+	} else if name == utils.ConfigVideoChannel {
 		var resp *config.VideoChannelResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -643,7 +632,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.VideoChannel, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAbilityEncodePower {
+	} else if name == utils.ConfigAbilityEncodePower {
 		var resp *config.AbilityEncodePowerResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -654,7 +643,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AbilityEncodePower, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigGeneralSystemState {
+	} else if name == utils.ConfigGeneralSystemState {
 		var resp *config.GeneralSystemStateResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -665,7 +654,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.GeneralSystemState, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigMediaDecodeParam {
+	} else if name == utils.ConfigMediaDecodeParam {
 		var resp *config.MediaDecodeParamResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -676,7 +665,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.MediaDecodeParam, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAlarmLocalAlarm {
+	} else if name == utils.ConfigAlarmLocalAlarm {
 		var resp *config.AlarmLocalAlarmResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -687,7 +676,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AlarmLocalAlarm, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAlarmAlarmOut {
+	} else if name == utils.ConfigAlarmAlarmOut {
 		var resp *config.AlarmAlarmOutResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -698,7 +687,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AlarmAlarmOut, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUartPTZPreset {
+	} else if name == utils.ConfigUartPTZPreset {
 		var resp *config.UartPTZPresetResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -709,7 +698,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.UartPTZPreset, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUartPTZTour {
+	} else if name == utils.ConfigUartPTZTour {
 		var resp *config.UartPTZTourResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -720,7 +709,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.UartPTZTour, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkRemoteDeviceV3 {
+	} else if name == utils.ConfigNetWorkRemoteDeviceV3 {
 		var resp *config.NetWorkRemoteDeviceV3Resp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -731,7 +720,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkRemoteDeviceV3, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetDDNS {
+	} else if name == utils.ConfigNetWorkNetDDNS {
 		var resp *config.NetWorkNetDDNSResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -742,7 +731,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetDDNS, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetPPPOE {
+	} else if name == utils.ConfigNetWorkNetPPPOE {
 		var resp *config.NetWorkNetPPPOEResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -753,7 +742,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetPPPOE, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetARSP {
+	} else if name == utils.ConfigNetWorkNetARSP {
 		var resp *config.NetWorkNetARSPResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -764,7 +753,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetARSP, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkRemoteDevice {
+	} else if name == utils.ConfigNetWorkRemoteDevice {
 		var resp *config.NetWorkRemoteDeviceResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -775,7 +764,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkRemoteDevice, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNet3G {
+	} else if name == utils.ConfigNetWorkNet3G {
 		var resp *config.NetWorkNet3GResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -786,7 +775,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNet3G, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkNetMobile {
+	} else if name == utils.ConfigNetWorkNetMobile {
 		var resp *config.NetWorkNetMobileResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -797,7 +786,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkNetMobile, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkDigTimeSyn {
+	} else if name == utils.ConfigNetWorkDigTimeSyn {
 		var resp *config.NetWorkDigTimeSynResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -808,7 +797,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkDigTimeSyn, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkShortMsg {
+	} else if name == utils.ConfigNetWorkShortMsg {
 		var resp *config.NetWorkShortMsgResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -819,7 +808,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkShortMsg, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigNetWorkMultimediaMsg {
+	} else if name == utils.ConfigNetWorkMultimediaMsg {
 		var resp *config.NetWorkMultimediaMsgResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -830,7 +819,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.NetWorkMultimediaMsg, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigAlarmIPCAlarm {
+	} else if name == utils.ConfigAlarmIPCAlarm {
 		var resp *config.AlarmIPCAlarmResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -841,7 +830,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.AlarmIPCAlarm, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigGeneralAutoMaintain {
+	} else if name == utils.ConfigGeneralAutoMaintain {
 		var resp *config.GeneralAutoMaintainResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -852,7 +841,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.GeneralAutoMaintain, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigUsers {
+	} else if name == utils.ConfigUsers {
 		var resp *config.UsersResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -863,7 +852,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.Users, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigGroups {
+	} else if name == utils.ConfigGroups {
 		var resp *config.GroupsResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -874,7 +863,7 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 			return resp.Groups, nil
 		}
 		return nil, errors.New(resp.RetMsg)
-	} else if name == ConfigSystemExUserMap {
+	} else if name == utils.ConfigSystemExUserMap {
 		var resp *config.SystemExUserMapResp
 		err = json.Unmarshal(res, &resp)
 		if err != nil {
@@ -892,20 +881,16 @@ func (jDevice *JLinkDevice) GetConfig(name string) (da interface{}, err error) {
 
 // Obtain device configuration Take the DAS configuration of device active registration service as an example
 func (jDevice *JLinkDevice) GetConfigHttp(name string) (res []byte, err error) {
-	parm := make(map[string]interface{})
-	parm["Name"] = name
-	postData, err := json.Marshal(parm)
-	if err != nil {
-		log.Println("Marshal err:" + err.Error())
-		return
-	}
-	resbody, err := http.HttpPost(dGetconfigUrl, jDevice.Jdtoken, postData)
+	url := fmt.Sprintf("%s%s", utils.GwpUrl+utils.DGetconfigUrl, jDevice.Jdtoken)
+	payload := strings.NewReader(`{"Name":"` + name + `"}`)
+	resbody, err := jDevice.HttpPost(url, payload)
+
 	if err != nil {
 		log.Println("HttpPost err:" + err.Error())
 		return
 	}
 	// fmt.Println(string(resbody))
-	resp := &Response{}
+	resp := &utils.Response{}
 	err = json.Unmarshal(resbody, resp)
 	if err != nil {
 		log.Println("Unmarshal err:" + err.Error())
@@ -928,7 +913,6 @@ func (jDevice *JLinkDevice) GetConfigHttp(name string) (res []byte, err error) {
 
 // Setting configuration Take the device actively registering the DAS service as an example
 func (jDevice *JLinkDevice) SetConfig(gc interface{}) (bool, error) {
-	fmt.Println(gc)
 	parm := make(map[string]interface{})
 	switch v := gc.(type) {
 	case config.AVEncEncodeResp:
@@ -1172,13 +1156,15 @@ func (jDevice *JLinkDevice) SetConfig(gc interface{}) (bool, error) {
 		return false, err
 	}
 	fmt.Println(string(postData))
-	resbody, err := http.HttpPost(dSetconfigUrl, jDevice.Jdtoken, postData)
+	url := fmt.Sprintf("%s%s", utils.GwpUrl+utils.DSetconfigUrl, jDevice.Jdtoken)
+	resbody, err := jDevice.HttpPost(url, strings.NewReader(string(postData)))
 	if err != nil {
 		log.Println("HttpPost err:" + err.Error())
 		return false, err
 	}
+
 	fmt.Println(string(resbody))
-	resp := &XYResponse{}
+	resp := &utils.XYResponse{}
 	err = json.Unmarshal(resbody, resp)
 	if err != nil {
 		log.Println(err)

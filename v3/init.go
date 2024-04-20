@@ -1,4 +1,4 @@
-package jrgd
+package v3
 
 type JLinkClient struct {
 	Uuid      string `json:"uuid"`
@@ -8,11 +8,12 @@ type JLinkClient struct {
 }
 
 type JLinkDevice struct {
-	JClient     *JLinkClient `json:"jClient"`
-	Sn          string       `json:"sn"`
-	DevUsername string       `json:"devUsername"`
-	DevPassword string       `json:"devPassword"`
-	Jdtoken     string       `json:"jdtoken"`
+	JClient      *JLinkClient `json:"jClient"`
+	Sn           string       `json:"sn"`
+	DevUsername  string       `json:"devUsername"`
+	DevPassword  string       `json:"devPassword"`
+	Jdtoken      string       `json:"jdtoken"`
+	JdLoginToken string       `json:"jdLoginToken"`
 }
 
 type JUser struct {

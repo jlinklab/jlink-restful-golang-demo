@@ -3,8 +3,11 @@ package opedev
 import (
 	"encoding/json"
 	"errors"
-	"jlink-restful-golang-demo/http"
+	"fmt"
+	"jlink-restful-golang-demo/utils"
+	v3 "jlink-restful-golang-demo/v3"
 	"log"
+	"strings"
 )
 
 type OPFileQueryReq struct {
@@ -14,6 +17,7 @@ type OPFileQueryReq struct {
 	DriverTypeMask string `json:"DriverTypeMask"`
 	BeginTime      string `json:"BeginTime"`
 	EndTime        string `json:"EndTime"`
+	StreamType     string `json:"StreamType"`
 }
 
 type OPFileQueryResponse struct {
@@ -38,9 +42,9 @@ type OPFileQueryData struct {
 	SessionID   string            `json:"SessionID"`
 }
 
-func OpeDevOPFileQuery(pdcd *OPFileQueryReq, token string) ([]OPFileQueryResp, error) {
+func OpeDevOPFileQuery(jDevice *v3.JLinkDevice, pdcd *OPFileQueryReq) ([]OPFileQueryResp, error) {
 	parm := make(map[string]interface{})
-	parm["Name"] = OPFileQuery
+	parm["Name"] = utils.OPFileQuery
 	parm["OPFileQuery"] = pdcd
 	// fmt.Println(parm)
 	postData, err := json.Marshal(parm)
@@ -49,7 +53,8 @@ func OpeDevOPFileQuery(pdcd *OPFileQueryReq, token string) ([]OPFileQueryResp, e
 		return nil, err
 	}
 	// fmt.Println(string(postData))
-	resbody, err := http.HttpPost(dOpdevUrl, token, postData)
+	url := fmt.Sprintf("%s%s", utils.GwpUrl+utils.DOpdevUrl, jDevice.Jdtoken)
+	resbody, err := jDevice.HttpPost(url, strings.NewReader(string(postData)))
 	if err != nil {
 		log.Println("HttpPost err:" + err.Error())
 		return nil, err

@@ -2,20 +2,23 @@ package main
 
 import (
 	"fmt"
-	"jlink-restful-golang-demo/jrgd"
+	"jlink-restful-golang-demo/config"
+	"jlink-restful-golang-demo/utils"
+	jrgd "jlink-restful-golang-demo/v3"
 )
 
 const (
 	// test
 	kDeviceId   = ""
-	kUuid       = ""
-	kAppKey     = ""
-	KAppSecret  = ""
-	kMovecard   = 2
 	devUsername = ""
 	devPassword = ""
-	userName    = ""
-	password    = ""
+	// test
+	kUuid      = ""
+	kAppKey    = ""
+	KAppSecret = ""
+	kMovecard  = 4
+	userName   = ""
+	password   = ""
 )
 
 func main() {
@@ -23,82 +26,70 @@ func main() {
 	jClient := jrgd.NewJLinkClient(kUuid, kAppKey, KAppSecret, kMovecard)
 	jDevice := jrgd.NewJLinkDevice(jClient, kDeviceId, devUsername, devPassword)
 
-	// GetDeviceToken
-	JDToken, err := jDevice.GetDeviceToken()
-	fmt.Println(JDToken, err)
+	// // V3 版本接口
 
-	//DeviceStatus
-	JDStatus, err := jDevice.DeviceStatus()
-	fmt.Println(JDStatus, err)
+	// // 先绑定设备
+	DeviceBind, err := jDevice.DeviceBind() // 绑定设备
+	fmt.Println("DeviceBind", DeviceBind, err)
+	// DeviceList, err := jDevice.DeviceList(1, 10) // 获取设备列表
+	// fmt.Println(DeviceList, err)
+	// 获取设备token
+	DeviceToken, err := jDevice.GetDeviceTokenV3() // 获取设备token
+	fmt.Println("DeviceToken", DeviceToken, err)
+	// jDevice.LoginToken()
+	// JDStatus, err := jDevice.DeviceStatus() // 获取设备状态
+	// fmt.Println(JDStatus, err)
+	// jDevice.DeviceWakeup("1") // 唤醒低功耗设备
+	// // tailoredconfig.GetTailoredConfig(jDevice, []string{"bl"}) //设备离线配置获取
 
-	//WakeUp
-	// wakeupFlag := jDevice.WakeUp()
-	// fmt.Println(wakeupFlag)
+	// jDevice.DeviceLoginToken()    // 登录设备
+	DeviceLogin, err := jDevice.DeviceLoginPassWord() // 登录设备
+	fmt.Println("DeviceLogin", DeviceLogin, err)
+	// jDevice.DeviceKeepalive()                          // 设备保活
+	// jDevice.DeviceUsermanage()                         // 获取设备用户信息
+	// jDevice.DeviceGetinfo(utils.SystemInfo)            // 获取设备配置 SystemInfo 4GInfo NetWork.RTMPALL StorageInfo
+	// jDevice.DeviceAbility(utils.AbilitySystemFunction) // 获取设备能力集 SystemFunction EncodeCapability BlindCapability MotionArea Camera TalkAudioFormat MultiLanguage Intelligent
+	jDConfig, err := jDevice.DeviceGetconfig(utils.ConfigNetWorkDAS) // 获取设备配置 AVEnc.Encode
+	fmt.Println("jDConfig", jDConfig, err)
 
-	// Login
-	// 1. Account password login
-	jDLogin, err := jDevice.Login()
-	fmt.Println(jDLogin, err)
-	// 2.Login with loginToken does not require account password verification
-	// loginToken := ""
-	// jDLogin, err = jDevice.DeviceLoginByToken(loginToken)
-	// fmt.Println(jDLogin)
+	if op, ok := jDConfig.(config.NetWorkDAS); ok {
+		op.Enable = false
+		nw := config.NetWorkDASResp{Name: utils.ConfigNetWorkDAS, NetWorkDAS: op}
 
-	// DeviceInfo
-	// SystemInfo
-	// devInfo, err := jDevice.DeviceInfo(jrgd.SystemInfo)
-	// fmt.Println(devInfo, err)
+		setConfigFlag, err := jDevice.SetConfig(nw)
+		fmt.Println(setConfigFlag, err)
+	}
 
-	// DeviceAbility
-	// After the device is successfully logged in, the device capability set is obtained. Take the acquisition of the system capability set as an example
-	// jDAbility, err := jDevice.DeviceAbility(jrgd.AbilityChannelSystemFunctionSmartH264)
-	// fmt.Println(jDAbility, err)
-
-	// GetConfig
-	// Take obtaining the device active registration service DAS configuration as an example
-	jDConfig, err := jDevice.GetConfig(jrgd.ConfigNetWorkDAS)
-	fmt.Println(jDConfig)
-
-	// // SetConfig
-	// // Take the device actively registering the DAS service as an example enable: enable serverAddr: server address Port: server port
-
-	// if op, ok := jDConfig.(config.NetWorkDAS); ok {
-	// 	op.Enable = false
-	// 	nw := config.NetWorkDASResp{Name: jrgd.ConfigNetWorkDAS, NetWorkDAS: op}
-	// 	setConfigFlag, err := jDevice.SetConfig(nw)
-	// 	fmt.Println(setConfigFlag, err)
-	// }
-
-	// nw := config.NetWorkDASResp{Name: jrgd.ConfigNetWorkDAS, NetWorkDAS: config.NetWorkDAS{Enable: true}}
-	// setConfigFlag, err := jDevice.SetConfig(nw)
-	// fmt.Println(setConfigFlag, err)
-
-	// Keepalive
-	// keepalive, err := jDevice.Keepalive()
-	// fmt.Println(keepalive)
-
-	// Equipment operation
-	// Take the PTZ direction control as an example
+	// // Equipment operation
+	// // Take the PTZ direction control as an example
 	// ptzDirectionControlDTO := new(opedev.PtzDirectionControlDTO)
-	// ptzDirectionControlDTO.Command = jrgd.DirectionLeft
+	// ptzDirectionControlDTO.Command = utils.DirectionLeft
 	// ptzDirectionControlDTO.Parameter.Channel = 0
-	// ptzDirectionControlDTO.Parameter.Preset = 65535
+	// ptzDirectionControlDTO.Parameter.Preset = -1
 	// ptzDirectionControlDTO.Parameter.Step = 6
-	// _, err = jDevice.DeviceOperate(ptzDirectionControlDTO)
+	// _, err = opedev.DeviceOperate(jDevice, ptzDirectionControlDTO)
 	// fmt.Println(err)
 
-	// Get live
-	// Take obtaining the mainstream live broadcast address of the device in hls format as an example; rs Account represents the user registered on the open platform through the RS interface, and rs Pass represents the user password registered on the open platform through the RS interface
-	// jUser := jrgd.NewJLinkUser(jClient, userName, password)
-	// usertoken, err := jUser.GetUserToken()
-	// fmt.Println(usertoken)
+	// jDevice.Capture(&jrgd.CaptureRequest{Channel: 0, PicType: 0})
+
+	// doorLock.DoorLockRemoteUnlock(jDevice, "")	// 远程解锁
+
+	// doorLock.DoorLockSetTempPassword(jDevice, []doorLock.TempPassword{ //临时密码
+	// 	{
+	// 		EndTime:   "2024-04-19 18:45:56",
+	// 		Password:  "123456",
+	// 		StartTime: "2024-04-19 10:15:56",
+	// 		ValidNum:  1,
+	// 	}})
 	// STREAM_EXTRA := "1"
 	// MEDIATYPE_HLS := "hls"
 	// CHANNEL := "0"
 	// PROTOCOL_TS := "ts"
-	// liveStream, err := jDevice.DeviceLivePlayUrl(STREAM_EXTRA, MEDIATYPE_HLS, PROTOCOL_TS, CHANNEL, jUser)
-	// fmt.Println(liveStream)
-	// channel := 0
-	// captureUrl, err := jDevice.Capture(channel)
-	// fmt.Println(captureUrl)
+	// Livestream, err := jDevice.Livestream(MEDIATYPE_HLS, CHANNEL, STREAM_EXTRA, PROTOCOL_TS)
+	// fmt.Println(Livestream, err)
+
+	jDevice.DeviceLogout() // 退出设备
+	// DeviceUnBind, err := jDevice.DeviceUnBind() // 取消绑定
+	// fmt.Println(DeviceUnBind, err)
+	// fmt.Println(JDStatus, err)
 }

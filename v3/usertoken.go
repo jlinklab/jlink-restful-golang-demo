@@ -1,4 +1,4 @@
-package jrgd
+package v3
 
 import (
 	"bytes"
@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"jlink-restful-golang-demo/utils"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -31,10 +32,10 @@ type userdata struct {
 
 // GetUserToken
 func (jUser *JUser) GetUserToken() (string, error) {
-	timeMillis := getTimeMillisUtil()
+	timeMillis := utils.GetTimeMillisUtil()
 	secret := jUser.JClient.Uuid + jUser.JClient.AppKey + jUser.JClient.AppSecret + timeMillis
-	change := change(secret, jUser.JClient.Movecard)
-	merge := mergeByte(secret, change)
+	change := utils.Change(secret, jUser.JClient.Movecard)
+	merge := utils.MergeByte(secret, change)
 	secret = fmt.Sprintf("%x", md5.Sum(merge))
 
 	tokenUrl := fmt.Sprintf(kUserTokenUrl, timeMillis, secret)
